@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:tata_app/info_screen.dart';
 import 'package:tata_app/tile.dart';
 
 class ShowTiles extends StatefulWidget {

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 class ChooseColumns extends StatefulWidget {
@@ -8,7 +10,8 @@ class ChooseColumns extends StatefulWidget {
   final String mainDescription;
 
   ChooseColumns(this.dynamicListFromCsvFile, this.chosenColumnCallback,
-      this.mainDescription, {this.returnMoreThanOne = false});
+      this.mainDescription,
+      {this.returnMoreThanOne = false});
 
   @override
   _ChooseColumnsState createState() => _ChooseColumnsState();
@@ -19,10 +22,14 @@ class _ChooseColumnsState extends State<ChooseColumns> {
   List<String> nameNameList = [];
   int singleIndex;
 
-
-  nameIndexListCallback(List<int> indexList) {
-    nameIndexList = indexList;
+  clearData() {
+    setState(() {
+      nameIndexList.clear();
+      nameNameList.clear();
+      singleIndex = null;
+    });
   }
+
 
   addNameIndexToList(int index) {
     setState(() {
@@ -40,70 +47,93 @@ class _ChooseColumnsState extends State<ChooseColumns> {
 
   changePriceIndex(int index) {
     setState(() {
-      nameIndexList.add(index);
-      nameNameList.add(widget.dynamicListFromCsvFile[0][index]);
+      singleIndex = index;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Expanded(
-            flex: 1,
-            child: Text(widget.mainDescription)),
-        if (nameNameList.isNotEmpty)
+    return Padding(
+      padding: const EdgeInsets.all(11.0),
+      child: Column(
+        children: [
+          Expanded(flex: 1, child: Text(widget.mainDescription)),
+          if (nameNameList.isNotEmpty || singleIndex != null)
+            Expanded(
+                flex: 1,
+                child: Row(
+                  children: [
+                    Expanded(
+                        child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          Text(widget.returnMoreThanOne
+                              ? 'Wybrane: '
+                              : 'Wybrany: '),
+                          nameNameList.isNotEmpty
+                              ? Text(nameNameList.toString())
+                              : Container(),
+                          singleIndex != null
+                              ? Text(singleIndex.toString())
+                              : Container(),
+                        ],
+                      ),
+                    )),
+                    Expanded(
+                        child: RaisedButton(
+                      onPressed: () {
+                        print('value bool: '+ widget.returnMoreThanOne.toString());
+                        widget.returnMoreThanOne
+                            ? widget.chosenColumnCallback(nameIndexList)
+                            : widget.chosenColumnCallback(singleIndex);
+                        clearData();
+                      },
+                      child: Text('Potweirdzam wybór i przechodzę dalej'),
+                    ))
+                  ],
+                )),
           Expanded(
-              flex: 1,
-              child: Row(
-                children: [
-                  Expanded(child: Text(
-                      widget.returnMoreThanOne ? 'Wybrane: ' : 'Wybrany: ' +
-                          nameNameList.toString())),
-                  Expanded(
-                      child: RaisedButton(
-                        onPressed: () {
-                          widget.returnMoreThanOne ? widget.chosenColumnCallback(nameIndexList) : widget.chosenColumnCallback(singleIndex);
-                        },
-                        child: Text('Potweirdzam wybór i przechodzę dalej'),
-                      ))
-                ],
-              )),
-        Expanded(
             flex: 8,
-            child: widget.returnMoreThanOne ? ListView.builder(
-                itemCount: widget.dynamicListFromCsvFile[0].length,
-                itemBuilder: (context, index) {
-                  return !nameIndexList.contains(index)
-                      ? RaisedButton.icon(
-                      onPressed: () {
-                        addNameIndexToList(index);
-                      },
-                      icon: Icon(Icons.add),
-                      label: Text(widget.dynamicListFromCsvFile[0][index]))
-                      : RaisedButton.icon(
-                      onPressed: () {
-                        removeNameIndexFromList(index);
-                      },
-                      icon: Icon(Icons.remove),
-                      label: Text(widget.dynamicListFromCsvFile[0][index]));
-                }) : ListView.builder(
-                itemCount: widget.dynamicListFromCsvFile[0].length,
-                itemBuilder: (context, index) {
-                  return singleIndex == index
-                      ? RaisedButton(
-                    onPressed: () {},
-                    child: Text(widget.dynamicListFromCsvFile[0][index]),
-                  )
-                      : RaisedButton.icon(
-                      onPressed: () {
-                        changePriceIndex(index);
-                      },
-                      icon: Icon(Icons.add),
-                      label: Text(widget.dynamicListFromCsvFile[0][index]));
-                }),
-        )
-      ],
+            child: widget.returnMoreThanOne
+                ? ListView.builder(
+                    itemCount: widget.dynamicListFromCsvFile[0].length,
+                    itemBuilder: (context, index) {
+                      return !nameIndexList.contains(index)
+                          ? RaisedButton.icon(
+                              onPressed: () {
+                                addNameIndexToList(index);
+                              },
+                              icon: Icon(Icons.add),
+                              label:
+                                  Text(widget.dynamicListFromCsvFile[0][index]))
+                          : RaisedButton.icon(
+                              onPressed: () {
+                                removeNameIndexFromList(index);
+                              },
+                              icon: Icon(Icons.remove),
+                              label:
+                                  Text(widget.dynamicListFromCsvFile[0][index]));
+                    })
+                : ListView.builder(
+                    itemCount: widget.dynamicListFromCsvFile[0].length,
+                    itemBuilder: (context, index) {
+                      return singleIndex == index
+                          ? RaisedButton(
+                              onPressed: () {},
+                              child:
+                                  Text(widget.dynamicListFromCsvFile[0][index]),
+                            )
+                          : RaisedButton.icon(
+                              onPressed: () {
+                                changePriceIndex(index);
+                              },
+                              icon: Icon(Icons.add),
+                              label:
+                                  Text(widget.dynamicListFromCsvFile[0][index]));
+                    }),
+          )
+        ],
+      ),
     );
   }
 }

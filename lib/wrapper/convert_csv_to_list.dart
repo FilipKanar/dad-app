@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:tata_app/UI/options/shared/choose_columns.dart';
+import 'package:tata_app/UI/screens/user_choice.dart';
 import 'package:tata_app/service/file/file_service.dart';
 
 class ConvertCsvToList extends StatefulWidget {
@@ -13,12 +13,6 @@ class ConvertCsvToList extends StatefulWidget {
 
 class _ConvertCsvListState extends State<ConvertCsvToList> {
 
-  testMethod(List<int> list) {
-    print('Lista: ' + list.toString());
-  }
-  testMethod2(int a) {
-    print('Lista: ' + a.toString());
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +21,7 @@ class _ConvertCsvListState extends State<ConvertCsvToList> {
         : FutureBuilder(
         future: FileService().convertCsvToDynamicList(widget.csvFile),
         builder: (context, value) {
-          return ChooseColumns(value.data, testMethod, 'Wybierz cene', returnMoreThanOne: true,);//ChooseUniqueName(value.data);
+          return UserChoice(value.data);//ChooseUniqueName(value.data);
         });
   }
 }
