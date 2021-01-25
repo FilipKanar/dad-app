@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:tata_app/UI/options/shared/choose_columns.dart';
+import 'package:tata_app/UI/options/components/choose_columns.dart';
+import 'package:tata_app/UI/options/components/generate_csv_options.dart';
 
 class UserChoice extends StatefulWidget {
   final List<List<dynamic>> dynamicListFromCsvFile;
@@ -14,15 +15,24 @@ class _UserChoiceState extends State<UserChoice> {
   List<int> _uniqueNameColumnIndexList = [];
   int _priceIndex;
   int _amountIndex;
-
+  List<int> _generateOptionsSet = [];
 
   setUniqueColumnIndexList(List<int> list) {
     setState(() {
       list.forEach((element) {
         _uniqueNameColumnIndexList.add(element);
       });
-      print('Lista: ' + _uniqueNameColumnIndexList.toString());
     });
+  }
+
+  setGenerateOptionsList(List<int> list) {
+    _generateOptionsSet.clear();
+    setState(() {
+      list.forEach((element) {
+        _generateOptionsSet.add(element);
+      });
+    });
+    print('Lista: '+ _generateOptionsSet.toString());
   }
 
   setPriceIndex(int index) {
@@ -40,7 +50,7 @@ class _UserChoiceState extends State<UserChoice> {
   }
 
   getNameColumnList() {
-    List<String> list=[];
+    List<String> list = [];
     _uniqueNameColumnIndexList.forEach((element) {
       list.add(widget.dynamicListFromCsvFile[0][element]);
     });
@@ -75,7 +85,10 @@ class _UserChoiceState extends State<UserChoice> {
         child: Column(
           mainAxisSize: MainAxisSize.max,
           children: [
-            Center(child: Text('Kolumny wybrane jako unikatowa nazwa: ' + getNameColumnList().toString()),),
+            Center(
+              child: Text('Kolumny wybrane jako unikatowa nazwa: ' +
+                  getNameColumnList().toString()),
+            ),
             Container(
               width: double.infinity,
               child: RaisedButton(
@@ -87,7 +100,10 @@ class _UserChoiceState extends State<UserChoice> {
                 child: Text('Zmień kolumny z nazwą'),
               ),
             ),
-            Center(child: Text('Kolumna z ceną: ' + widget.dynamicListFromCsvFile[0][_priceIndex]),),
+            Center(
+              child: Text('Kolumna z ceną: ' +
+                  widget.dynamicListFromCsvFile[0][_priceIndex]),
+            ),
             Container(
               width: double.infinity,
               child: RaisedButton(
@@ -99,7 +115,10 @@ class _UserChoiceState extends State<UserChoice> {
                 child: Text('Zmień kolumnę z ceną'),
               ),
             ),
-            Center(child: Text('Kolumna z iloscia: ' + widget.dynamicListFromCsvFile[0][_amountIndex]),),
+            Center(
+              child: Text('Kolumna z iloscia: ' +
+                  widget.dynamicListFromCsvFile[0][_amountIndex]),
+            ),
             Container(
               width: double.infinity,
               child: RaisedButton(
@@ -110,6 +129,9 @@ class _UserChoiceState extends State<UserChoice> {
                 },
                 child: Text('Zmień kolumnę z ilością'),
               ),
+            ),
+            Expanded(
+              child: GenerateCsvOptions(setGenerateOptionsList),
             ),
           ],
         ),
