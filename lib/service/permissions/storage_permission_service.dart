@@ -6,10 +6,10 @@ class StoragePermissionService {
   Future<bool> awaitStoragePermissions() async {
     try {
       PermissionStatus permission = await Permission.storage.status;
-      if (permission != PermissionStatus.granted) {
+      if (permission.isUndetermined) {
         await Permission.storage.request();
         permission = await Permission.storage.status;
-        return permission != PermissionStatus.granted ? false : true;
+        return permission.isGranted ? true : false;
       } else {
         return true;
       }

@@ -14,7 +14,6 @@ class _StoragePermissionWrapperState extends State<StoragePermissionWrapper> {
   Widget build(BuildContext context) {
     return FutureBuilder(
         future: StoragePermissionService().awaitStoragePermissions(),
-        initialData: false,
         builder: (context, snapshot) {
           if (snapshot.hasData && snapshot.data == true) {
             return CsvFilePicker();
@@ -23,6 +22,7 @@ class _StoragePermissionWrapperState extends State<StoragePermissionWrapper> {
               body: Center(
                 child: Column(mainAxisAlignment: MainAxisAlignment.center,children: [
                   Text('Nie udzieliles pozwolenia, udziel pozwolenia w ustawienich systemu i zrestartuj aplikację.'),
+
                 ],),
               ),
             );

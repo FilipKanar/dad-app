@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:csv/csv.dart';
 import 'package:file_picker/file_picker.dart';
 
+
 class FileService{
 
   Future<PlatformFile> awaitCsvFile() async {
@@ -19,5 +20,12 @@ class FileService{
     return await input
         .transform(utf8.decoder)
         .transform(new CsvToListConverter()).toList();
+  }
+
+  Future convertDynamicListToCsvFile(List<List<dynamic>> csvList) async {
+    File file = new File('/storage/emulated/0/Download/' + 'generatedCsv.csv');
+    String csv = ListToCsvConverter().convert(csvList);
+    file.writeAsString(csv);
+    print('Teoretycznie poszlo');
   }
 }
